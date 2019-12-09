@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 import java.net.URL
 
 
@@ -24,12 +25,17 @@ class MoviesAdapter(val movies: ArrayList<Movies>,val context: Context): Recycle
 
     override fun onBindViewHolder(holder: MoviesAdapter.ViewHolder, position: Int) {
         holder.movieName.text = movies[position].constructMovieName
-        holder.movieLongName.text = movies[position].constructMovietitleOriginal
+        holder.movieLongName.text = movies[position].constructMovieTitleOriginal
         holder.movieDetail.text = movies[position].constructMovieDetail
 
-        Picasso.with(context)
-            .load("https://image.tmdb.org/t/p/w500/${movies[position].constructMoviePoster}")
-            .into(holder.moviePoster)
+        try{
+            Picasso.with(context)
+                .load("https://image.tmdb.org/t/p/w500/${movies[position].constructMoviePoster}")
+                .into(holder.moviePoster)
+        } catch (e: Exception){
+            holder.moviePoster.setImageDrawable(null)
+        }
+
     }
 
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
