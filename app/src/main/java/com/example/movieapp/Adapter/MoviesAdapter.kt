@@ -1,20 +1,20 @@
-package com.example.movieapp
+package com.example.movieapp.Adapter
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movieapp.Movies
+import com.example.movieapp.R
 import com.squareup.picasso.Picasso
 import java.lang.Exception
-import java.net.URL
 
 
-class MoviesAdapter(val movies: ArrayList<Movies>,val context: Context): RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesAdapter.ViewHolder {
+class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.listt_movies_row,parent,false)
         return ViewHolder(view)
     }
@@ -23,7 +23,7 @@ class MoviesAdapter(val movies: ArrayList<Movies>,val context: Context): Recycle
         return movies.size
     }
 
-    override fun onBindViewHolder(holder: MoviesAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.movieName.text = movies[position].constructMovieName
         holder.movieLongName.text = movies[position].constructMovieTitleOriginal
         holder.movieDetail.text = movies[position].constructMovieDetail
