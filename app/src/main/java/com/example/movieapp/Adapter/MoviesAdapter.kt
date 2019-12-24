@@ -38,6 +38,13 @@ class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): Recycl
 
     }
 
+    fun addData(listItems: ArrayList<Movies>) {
+        var size = listItems.size
+        listItems.addAll(listItems)
+        var sizeNew = listItems.size
+        notifyItemRangeChanged(size, sizeNew)
+    }
+
     class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         val movieName: TextView = itemView.findViewById(R.id.textViewName)

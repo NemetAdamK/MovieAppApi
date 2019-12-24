@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
 import com.example.movieapp.R
+import com.example.movieapp.userId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -52,6 +54,9 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+                    userId = auth.currentUser!!.uid
+                    FirebaseDatabase.getInstance().getReference("users").child(userId).child("name").setValue("No username")
+
                     updateUI(user)
                 } else {
 
