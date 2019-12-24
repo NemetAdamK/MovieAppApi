@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapp.Movies
 import com.example.movieapp.R
@@ -27,6 +30,10 @@ class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): Recycl
         holder.movieName.text = movies[position].constructMovieName
         holder.movieLongName.text = movies[position].constructMovieTitleOriginal
         holder.movieDetail.text = movies[position].constructMovieDetail
+
+        holder.item.setOnClickListener {
+            Toast.makeText(context,movies[position].constructMovieName+ ", Movie clicked",Toast.LENGTH_SHORT).show()
+        }
 
         try{
             Picasso.with(context)
@@ -51,6 +58,7 @@ class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): Recycl
         val movieLongName: TextView = itemView.findViewById(R.id.textViewOriginalTitle)
         val movieDetail: TextView = itemView.findViewById(R.id.textViewOverView)
         val moviePoster: ImageView = itemView.findViewById(R.id.imageViewPoster)
+        val item: LinearLayout = itemView.findViewById(R.id.linerLayout)
 
     }
 }

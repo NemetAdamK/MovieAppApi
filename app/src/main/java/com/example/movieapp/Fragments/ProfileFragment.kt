@@ -1,12 +1,13 @@
 package com.example.movieapp.Fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,23 +17,25 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import com.example.movieapp.*
 import com.example.movieapp.Activities.LoginActivity
-import com.example.movieapp.R
-import com.example.movieapp.picture
-import com.example.movieapp.userId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.profilefragment.*
-import java.io.File
+import java.net.URI
 
 class ProfileFragment : Fragment {
 
+    val CUSTOM_PREF_NAME = "User_data"
     private val IMAGE_PICK_CODE = 1000
     private val PERMISSION_CODE = 1001
     var imageView: ImageView? = null
+    private lateinit var auth: FirebaseAuth
         private set
 
     constructor()
@@ -48,14 +51,23 @@ class ProfileFragment : Fragment {
             picture=data?.data
             imageView?.setImageURI(data?.data)
 
+            Toast.makeText(context,"Hopp",Toast.LENGTH_SHORT).show()
+            Log.v("TAG1",data?.data.toString())
             FirebaseDatabase.getInstance().getReference("users").child(userId).child("photo").setValue(
-                picture.toString())
+                data?.dataString)
+
+
+
+
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.profilefragment, container, false)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val sharedPreferences = context!!.getSharedPreferences(myPreferences, Context.MODE_PRIVATE)
+        userId = sharedPreferences.getString("userId","0")!!
 
         val logoutBotton = view!!.findViewById<Button>(R.id.logoutButton)
         logoutBotton.setOnClickListener {
@@ -86,7 +98,9 @@ class ProfileFragment : Fragment {
         val updateName = view!!.findViewById<Button>(R.id.updateName)
         updateName.setOnClickListener {
             if (nameEditText.text.toString().isNotEmpty()){
+
                 FirebaseDatabase.getInstance().getReference("users").child(userId).child("name").setValue(nameEditText.text.toString())
+
             }
 
         }
@@ -109,8 +123,14 @@ class ProfileFragment : Fragment {
                 override fun onCancelled(p0: DatabaseError) {}
                 override fun onDataChange(p0: DataSnapshot) {
                     val photo = p0.getValue(String::class.java)
+
                     if (photo != null) {
-                        imageView?.setImageURI(Uri.parse(photo))
+                        try{
+                            imageView?.setImageURI(photo.toUri())
+                        }catch (e:Exception){
+
+                        }
+
                     }
                 }
 
@@ -134,6 +154,37 @@ class ProfileFragment : Fragment {
         }
 
 
+    }
+
+
+    private fun seeAuthenticatedUser() {
+        auth = FirebaseAuth.getInstance()
+        var user = auth.currentUser
+        userId = auth.currentUser!!.uid
+
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("name").addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                val name = p0.getValue(String::class.java)
+                if (name != null) {
+                    userName = name.toString()
+                }
+            }
+
+        })
+
+        FirebaseDatabase.getInstance().getReference("users").child(userId).child("photo").addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                val pictureDB = p0.getValue(String::class.java)
+                if (pictureDB != null) {
+                    picture = pictureDB.toUri()
+                }
+            }
+
+        })
     }
 
     private fun pickImage() {

@@ -1,11 +1,13 @@
 package com.example.movieapp.Activities
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
 import com.example.movieapp.R
+import com.example.movieapp.myPreferences
 import com.example.movieapp.userId
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -15,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,11 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     userId = auth.currentUser!!.uid
+                    val sharedPreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE)
+
+                    val editor = sharedPreferences.edit()
+                    editor.putString("userId", userId)
+                    editor.apply()
                     FirebaseDatabase.getInstance().getReference("users").child(userId).child("name").setValue("No username")
 
                     updateUI(user)
