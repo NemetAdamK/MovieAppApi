@@ -8,12 +8,16 @@ class Movies(_movieName: String,_movieOriginalName:String,_movieDetail:String,_p
     var constructMovieTitleOriginal: String = ""
     var constructorReleaseDate: String? = ""
     var constructorMovieId: String =" "
+    var constructorIsFavorite: Boolean = false
+
+    constructor() : this("No one","0","no question","no group","","")
 
     init{
         this.constructMovieName=_movieName
         this.constructMovieDetail=_movieDetail
         this.constructMoviePoster=_picture
         this.constructMovieTitleOriginal=_movieOriginalName
+
     }
 
     init{
@@ -24,4 +28,7 @@ class Movies(_movieName: String,_movieOriginalName:String,_movieDetail:String,_p
         this.constructorReleaseDate=_releaseDate
         this.constructorMovieId=_id
     }
+
+
+
 }

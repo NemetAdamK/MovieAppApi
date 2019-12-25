@@ -11,3 +11,4 @@ var userId: String = ""
 var userName = ""
 var picture: Uri? = Uri.parse("")
 var myPreferences = "myPrefs"
+var booleanIsFavorite = false

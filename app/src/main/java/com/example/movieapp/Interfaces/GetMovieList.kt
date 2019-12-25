@@ -18,5 +18,8 @@ interface GetMovieList {
     @GET("movie/{movie_id}/videos?api_key=f2caa469e3d1325a79cecec4fbc087b6")
     fun getTrailer(@Path("movie_id") id: String): Call<TrailerResponse>
 
+    @GET(" movie/{movie_id}/similar?api_key=f2caa469e3d1325a79cecec4fbc087b6")
+    fun getSimilar(@Path("movie_id") id: Int): Call<Json4Kotlin_Base_Movies>
+
 
 }
