@@ -1,30 +1,36 @@
 package com.example.movieapp.Fragments
 
+
 import Json4Kotlin_Base_Movies
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movieapp.API.TrailerResponse
+import com.example.movieapp.Adapter.MoviesAdapter
 import com.example.movieapp.Interfaces.GetMovieList
 import com.example.movieapp.Interfaces.GetTopMovieList
 import com.example.movieapp.Movies
-import com.example.movieapp.Adapter.MoviesAdapter
 import com.example.movieapp.R
 import com.example.movieapp.Retrofit.RetrofitMoviesClient
+import kotlinx.android.synthetic.main.detailsdialog.*
 import kotlinx.android.synthetic.main.homefragment.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeFragment : Fragment() {
+
+class DetailsDialogFragment(private val movie: Movies) :
+    DialogFragment() {
 
     val movies : ArrayList<Movies> = ArrayList()
     var page = 1
@@ -62,22 +68,27 @@ class HomeFragment : Fragment() {
         abstract fun loadMoreItems()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.homefragment, container, false)
+        inflater.inflate(R.layout.detailsdialog, container, false)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
 
 
+        titleTextView.text = movie.constructMovieName
 
         populateWithMovies()
 
-        recyclerViewSearchMovies.addItemDecoration(
+        recyclerView.addItemDecoration(
             DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL)
         )
-        recyclerViewSearchMovies.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         var isLastPage: Boolean = false
         var isLoading: Boolean = false
@@ -100,41 +111,6 @@ class HomeFragment : Fragment() {
         })
 
 
-        val buttonForSearch = view!!.findViewById<Button>(R.id.buttonSearchMovie)
-        buttonForSearch.setOnClickListener{
-            val service = RetrofitMoviesClient.retrofitInstance?.create(GetMovieList::class.java)
-            val dataFlight = service?.getAllData(editTextSearchMovie.text.toString())
-            dataFlight?.enqueue(object: Callback<Json4Kotlin_Base_Movies> {
-
-                override fun onFailure(call: Call<Json4Kotlin_Base_Movies>, t: Throwable) {
-                    Toast.makeText(context,"Error parsing json", Toast.LENGTH_LONG).show()
-                }
-
-                override fun onResponse(
-                    call: Call<Json4Kotlin_Base_Movies>,
-                    response: Response<Json4Kotlin_Base_Movies>
-                ) {
-                    val body = response.body()
-
-                    movies.clear()
-                    for (element in body!!.results){
-                        movies.add(Movies(element.title,element.original_title,element.overview,element.poster_path,element.release_date,element.id.toString()))
-                    }
-
-                    if (movies.size == 0){
-                        Toast.makeText(context,"No data to be shown", Toast.LENGTH_SHORT).show()
-                    }
-                    recyclerViewSearchMovies.adapter =
-                        MoviesAdapter(
-                            movies,
-                            context!!
-                        )
-
-
-                }
-
-            })
-        }
     }
 
     fun getMoreItems() {
@@ -145,11 +121,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun populateWithMovies() {
-        recyclerViewSearchMovies.addItemDecoration(
+        recyclerView.addItemDecoration(
             DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL)
         )
-        recyclerViewSearchMovies.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(context)
         val service = RetrofitMoviesClient.retrofitInstance?.create(GetTopMovieList::class.java)
         val dataFlight = service?.getTopMovieData()
         dataFlight?.enqueue(object: Callback<Json4Kotlin_Base_Movies> {
@@ -180,7 +156,7 @@ class HomeFragment : Fragment() {
                 if (movies.size == 0) {
                     Toast.makeText(context, "No data to be shown", Toast.LENGTH_SHORT).show()
                 }
-                recyclerViewSearchMovies.adapter =
+                recyclerView.adapter =
                     MoviesAdapter(movies, context!!)
 
 
@@ -188,6 +164,6 @@ class HomeFragment : Fragment() {
         })
     }
 
-}
 
+}
 
