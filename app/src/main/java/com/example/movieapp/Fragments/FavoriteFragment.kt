@@ -120,7 +120,8 @@ class FavoriteFragment : Fragment() {
                         ,QuestionResult.constructMovieDetail
                         ,QuestionResult.constructMoviePoster
                         ,QuestionResult.constructorReleaseDate
-                        ,QuestionResult.constructorMovieId))
+                        ,QuestionResult.constructorMovieId,
+                        QuestionResult.constructorIsFavorite))
                 }
 
                 if (movies.size == 0){

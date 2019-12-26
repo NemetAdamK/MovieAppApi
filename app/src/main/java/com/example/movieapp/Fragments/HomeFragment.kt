@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
 
                     movies.clear()
                     for (element in body!!.results){
-                        movies.add(Movies(element.title,element.original_title,element.overview,element.poster_path,element.release_date,element.id.toString()))
+                        movies.add(Movies(element.title,element.original_title,element.overview,element.poster_path,element.release_date,element.id.toString(),false))
                     }
 
                     if (movies.size == 0){
@@ -172,7 +172,8 @@ class HomeFragment : Fragment() {
                             element.overview,
                             element.poster_path,
                             element.release_date,
-                            element.id.toString()
+                            element.id.toString(),
+                            false
                         )
                     )
                 }

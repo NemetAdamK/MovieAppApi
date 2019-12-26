@@ -142,7 +142,8 @@ class NowPlayingFragment : Fragment() {
                             element.overview,
                             element.poster_path,
                             element.release_date,
-                            element.id.toString()
+                            element.id.toString(),
+                            false
                         )
                     )
                 }

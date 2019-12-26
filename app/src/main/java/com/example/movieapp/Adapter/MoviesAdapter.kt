@@ -219,7 +219,8 @@ class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): Recycl
                             element.overview,
                             element.poster_path,
                             element.release_date,
-                            element.id.toString()
+                            element.id.toString(),
+                            false
                         )
                     )
                 }
@@ -235,19 +236,63 @@ class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): Recycl
         })
 
 
-        /*
-        if (booleanIsFavorite){
-            mDialogView.buttonAddToFav.text = "Remove from favorites"
-        } else {
-            mDialogView.buttonAddToFav.text = "Add to favorites"
-        }
 
-*/ // later feature
+        val auth = FirebaseAuth.getInstance()
+        userId = auth.currentUser!!.uid
+
+        FirebaseDatabase.getInstance().reference.child("users").child(userId).child("movies").orderByKey().addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                var ok = 0
+                for (element in p0.children){
+                    val QuestionResult = element.getValue(Movies::class.java)
+                    if (QuestionResult?.constructMovieDetail == movie.constructMovieDetail){
+                        ok=1
+
+                    }
+                }
+                if (ok==0){
+                        mDialogView.buttonAddToFav.text = "Add to favorites"
+
+                } else {
+                    mDialogView.buttonAddToFav.text = "Remove from favorites"
+                    mDialogView.buttonAddToFav.setOnClickListener{
+                        FirebaseDatabase.getInstance().reference.child("users").child(userId).child("movies").orderByKey().addListenerForSingleValueEvent(object :
+                            ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
+
+                            }
+
+                            override fun onDataChange(p0: DataSnapshot) {
+                                var ok = 0
+                                for (element in p0.children){
+                                    val QuestionResult = element.getValue(Movies::class.java)
+                                    if (QuestionResult?.constructMovieDetail == movie.constructMovieDetail){
+                                        element.ref.removeValue()
+                                        Toast.makeText(context,"Favorite removed",Toast.LENGTH_SHORT).show()
+
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+
+            }
+        })
+
+
+
 
         mDialogView.buttonAddToFav.setOnClickListener {
 
             val auth = FirebaseAuth.getInstance()
             userId = auth.currentUser!!.uid
+
             FirebaseDatabase.getInstance().reference.child("users").child(userId).child("movies").orderByKey().addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
@@ -264,6 +309,7 @@ class MoviesAdapter(val movies: ArrayList<Movies>, val context: Context): Recycl
                         }
                     }
                     if (ok==0){
+                        movie.constructorIsFavorite = true
                         FirebaseDatabase.getInstance().getReference("users").child(userId).child("movies").push().setValue(movie)
                     } else {
                         Toast.makeText(context,"Movie already added",Toast.LENGTH_SHORT).show()

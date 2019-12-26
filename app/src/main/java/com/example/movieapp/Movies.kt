@@ -1,6 +1,6 @@
 package com.example.movieapp
 
-class Movies(_movieName: String,_movieOriginalName:String,_movieDetail:String,_picture: String?,_releaseDate: String?,_id: String) {
+class Movies(_movieName: String,_movieOriginalName:String,_movieDetail:String,_picture: String?,_releaseDate: String?,_id: String,_isFavorite: Boolean) {
 
     var constructMovieName: String = ""
     var constructMovieDetail: String = ""
@@ -10,7 +10,7 @@ class Movies(_movieName: String,_movieOriginalName:String,_movieDetail:String,_p
     var constructorMovieId: String =" "
     var constructorIsFavorite: Boolean = false
 
-    constructor() : this("No one","0","no question","no group","","")
+    constructor() : this("No one","0","no question","no group","","",false)
 
     init{
         this.constructMovieName=_movieName
